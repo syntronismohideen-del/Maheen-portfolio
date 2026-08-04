@@ -10,7 +10,7 @@ doc.moveDown();
 
 doc.fontSize(10).font('Helvetica').text('Email: maheenmohideen@gmail.com | Phone: +91 8870573574', { align: 'center' });
 doc.text('LinkedIn: https://www.linkedin.com/in/mohideen-maheen-a00214280', { align: 'center' });
-doc.text('Portfolio: https://mohideenmaheen.vercel.app/', { align: 'center' });
+doc.text('Portfolio: https://maheen-portfolio-zeta.vercel.app/', { align: 'center' });
 doc.moveDown();
 
 doc.fontSize(14).font('Helvetica-Bold').text('Professional Summary');

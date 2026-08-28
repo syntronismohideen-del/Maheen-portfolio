@@ -1,29 +1,36 @@
 import { useEffect, useState } from 'react';
-import { motion } from 'motion/react';
+import { motion, useMotionValue, useSpring } from 'motion/react';
 
 export default function CustomCursor() {
-  const [mousePosition, setMousePosition] = useState({ x: -100, y: -100 });
   const [isHovering, setIsHovering] = useState(false);
-  const [isTouchDevice, setIsTouchDevice] = useState(false);
+  const [isEnabled, setIsEnabled] = useState(false);
+
+  const cursorX = useMotionValue(-100);
+  const cursorY = useMotionValue(-100);
+
+  const smoothX = useSpring(cursorX, { stiffness: 500, damping: 30, mass: 0.2 });
+  const smoothY = useSpring(cursorY, { stiffness: 500, damping: 30, mass: 0.2 });
 
   useEffect(() => {
-    // Check if it's a touch device to disable the custom cursor
+    // Disable on touch devices or fine pointer unavailable
     if (window.matchMedia('(pointer: coarse)').matches) {
-      setIsTouchDevice(true);
       return;
     }
+    setIsEnabled(true);
 
     const updateMousePosition = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
+      cursorX.set(e.clientX);
+      cursorY.set(e.clientY);
     };
 
     const handleMouseOver = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
+      const target = e.target as HTMLElement | null;
       if (
-        target.tagName.toLowerCase() === 'a' ||
-        target.tagName.toLowerCase() === 'button' ||
-        target.closest('a') ||
-        target.closest('button')
+        target &&
+        (target.tagName.toLowerCase() === 'a' ||
+          target.tagName.toLowerCase() === 'button' ||
+          target.closest('a') ||
+          target.closest('button'))
       ) {
         setIsHovering(true);
       } else {
@@ -31,39 +38,47 @@ export default function CustomCursor() {
       }
     };
 
-    window.addEventListener('mousemove', updateMousePosition);
-    window.addEventListener('mouseover', handleMouseOver);
+    window.addEventListener('mousemove', updateMousePosition, { passive: true });
+    window.addEventListener('mouseover', handleMouseOver, { passive: true });
 
     return () => {
       window.removeEventListener('mousemove', updateMousePosition);
       window.removeEventListener('mouseover', handleMouseOver);
     };
-  }, []);
+  }, [cursorX, cursorY]);
 
-  if (isTouchDevice) {
+  if (!isEnabled) {
     return null;
   }
 
   return (
     <>
       <motion.div
-        className="fixed top-0 left-0 w-2.5 h-2.5 bg-primary rounded-full pointer-events-none z-[9999] hidden sm:block mix-blend-screen"
+        className="fixed top-0 left-0 w-2.5 h-2.5 bg-primary rounded-full pointer-events-none z-[9999] hidden sm:block will-change-transform"
+        style={{
+          x: cursorX,
+          y: cursorY,
+          translateX: '-50%',
+          translateY: '-50%',
+        }}
         animate={{
-          x: mousePosition.x - 5,
-          y: mousePosition.y - 5,
           scale: isHovering ? 0 : 1,
         }}
-        transition={{ type: 'spring', stiffness: 1000, damping: 40, mass: 0.1 }}
+        transition={{ duration: 0.15 }}
       />
       <motion.div
-        className="fixed top-0 left-0 w-8 h-8 border border-primary/60 rounded-full pointer-events-none z-[9998] hidden sm:block backdrop-invert-[0.1]"
-        animate={{
-          x: mousePosition.x - 16,
-          y: mousePosition.y - 16,
-          scale: isHovering ? 1.5 : 1,
-          backgroundColor: isHovering ? 'rgba(139, 92, 246, 0.15)' : 'rgba(139, 92, 246, 0)',
+        className="fixed top-0 left-0 w-8 h-8 border border-primary/60 rounded-full pointer-events-none z-[9998] hidden sm:block will-change-transform"
+        style={{
+          x: smoothX,
+          y: smoothY,
+          translateX: '-50%',
+          translateY: '-50%',
         }}
-        transition={{ type: 'spring', stiffness: 300, damping: 25, mass: 0.4 }}
+        animate={{
+          scale: isHovering ? 1.5 : 1,
+          backgroundColor: isHovering ? 'rgba(168, 85, 247, 0.15)' : 'rgba(168, 85, 247, 0)',
+        }}
+        transition={{ duration: 0.2 }}
       />
     </>
   );

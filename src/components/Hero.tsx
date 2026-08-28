@@ -41,9 +41,9 @@ export default function Hero() {
             <a href="https://www.linkedin.com/in/mohideen-maheen-a00214280" target="_blank" rel="noreferrer" aria-label="LinkedIn Profile" className="hover:text-primary transition-colors">
               <Linkedin className="w-6 h-6" />
             </a>
-            <a href="https://github.com/Maheen0312" target="_blank" rel="noreferrer" className="hover:text-primary transition-colors flex items-center gap-2">
+            <a href="https://mohideenmaheen.vercel.app/" target="_blank" rel="noreferrer" className="hover:text-primary transition-colors flex items-center gap-2">
               <ExternalLink className="w-6 h-6" />
-              <span className="text-sm font-medium uppercase tracking-wider">GitHub</span>
+              <span className="text-sm font-medium uppercase tracking-wider">Portfolio</span>
             </a>
           </div>
         </div>
@@ -52,12 +52,12 @@ export default function Hero() {
         <div className="relative w-full h-[450px] md:h-[600px] flex justify-center items-center mt-12 md:mt-0">
            <motion.div 
              initial={{ opacity: 0, y: 30 }}
-             animate={{ opacity: 1, y: [-15, 15, -15] }}
+             animate={{ opacity: 1, y: [-10, 10, -10] }}
              transition={{ 
                opacity: { duration: 0.8, delay: 0.3 },
                y: { duration: 6, repeat: Infinity, ease: "easeInOut" }
              }}
-             className="w-full max-w-[350px] md:max-w-[450px] aspect-square md:aspect-[4/5] relative flex justify-center items-center"
+             className="w-full max-w-[350px] md:max-w-[450px] aspect-square md:aspect-[4/5] relative flex justify-center items-center transform-gpu will-change-transform"
            >
              <div 
                className="w-full h-full relative"
@@ -75,8 +75,13 @@ export default function Hero() {
                <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-transparent pointer-events-none"></div>
              </div>
              
-             {/* Glowing ambient background behind the floating portrait */}
-             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[70%] h-[70%] bg-primary/20 rounded-full blur-[80px] -z-10 pointer-events-none"></div>
+             {/* Glowing ambient background behind the floating portrait with radial gradient */}
+             <div 
+               className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] rounded-full -z-10 pointer-events-none opacity-50 transform-gpu"
+               style={{
+                 background: 'radial-gradient(circle, rgba(168, 85, 247, 0.4) 0%, rgba(10, 2, 22, 0) 70%)',
+               }}
+             />
            </motion.div>
         </div>
         
